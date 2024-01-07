@@ -12,7 +12,7 @@ struct ContentView: View {
         VStack {
             CardView(isFaceUp: true)
             CardView()
-            CardView()
+            CardView(isFaceUp: true)
         }
         .foregroundColor(.mint )
         .padding()
