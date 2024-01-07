@@ -11,7 +11,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             CardView(isFaceUp: true)
-            CardView()
+            CardView(isFaceUp: true)
             CardView()
         }
         .foregroundColor(.mint )
