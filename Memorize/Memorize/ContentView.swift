@@ -53,7 +53,6 @@ struct ContentView: View {
         })
         .disabled(cardCount + offset < 1 ||
                   cardCount + offset > emojis.count)
-        
     }
     
     var cardRemover: some View {
