@@ -33,16 +33,23 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                         cards[potentialMatchedIndex].content {
                         cards[potentialMatchedIndex].isMatched = true
                         cards[chosenIndex].isMatched = true
-                        //match -> get 2 score
-                        score += 2
+                        //match -> get 200 score (< 1 second)
+                        //after that, reduce 10 points per second
+                        //but no reduce after 10 seconds
+                        score = (200-10*Int(timer.distance(to: Date()).rounded(.down))) > 100 ? score + 200 - 10*Int(timer.distance(to: Date()).rounded(.down)) : (score + 100)
+                        //for debug
+                        
+//                        print(200 - 10*Int(timer.distance(to: Date()).rounded(.down)))
+//                        print(Int(timer.distance(to: Date()).rounded(.down)))
                     }
                     else {
-                        //already seen ? then score -1
-                        cards[chosenIndex].seen ? (score = score - 1) : (cards[chosenIndex].seen = true)
-                        cards[potentialMatchedIndex].seen ? (score = score - 1) : (cards[potentialMatchedIndex].seen = true)
+                        //already seen ? then score - 50
+                        cards[chosenIndex].seen ? (score -= 50) : (cards[chosenIndex].seen = true)
+                        cards[potentialMatchedIndex].seen ? (score -= 50) : (cards[potentialMatchedIndex].seen = true)
                     }
                 } else {
                     indexOfTheOneAndOnlyFaceUpCard = chosenIndex
+                    timer = Date()
                 }
                 cards[chosenIndex].isFaceUp = true
             }
@@ -59,6 +66,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         return score
     }
     var score = 0
+    var timer = Date()
     
     struct Card: Identifiable, Equatable, CustomDebugStringConvertible {
         var isFaceUp = false

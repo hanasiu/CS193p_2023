@@ -1,9 +1,3 @@
-//
-//  EmojiMemoryGame.swift
-//  Memorize
-//
-//  Created by kimyu on 1/12/24.
-//
 
 import SwiftUI
 
