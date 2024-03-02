@@ -22,6 +22,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
 //            for index in cards.indices {
 //                if index == newValue {
 //                    cards[index].isFaceUp = true
+//                    cards[index].isFaceUp = true
 //                } else {
 //                    cards[index].isFaceUp = false
 //                }
