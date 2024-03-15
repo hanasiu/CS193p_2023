@@ -14,8 +14,8 @@
             filePath = "SetGame/SetGame.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
             landmarkName = "init(cardInfoFactory:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "SetGame/SetGameView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
             landmarkName = "possibleCorrectCards"
             landmarkType = "24">
          </BreakpointContent>

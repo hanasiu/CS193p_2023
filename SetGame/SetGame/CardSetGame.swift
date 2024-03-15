@@ -62,11 +62,11 @@ class CardSetGame: ObservableObject {
     }
     
     func countCards() -> Int {
-        return model.countCards()
+        return model.cards.count
     }
     
     func getScore() -> Int {
-        return model.getScore()
+        return model.score
     }
     
     func choose(_ card: SetGame<CardExample>.Card) {
@@ -95,8 +95,16 @@ class CardSetGame: ObservableObject {
         model = createSetGame()
     }
     
-    func filterPossibleCorrectCards() -> Any {
-       return model.filterPossibleCorrectCards()
+    func filterPossibleCorrectCards() {
+       model.filterPossibleCorrectCards()
+    }
+    
+    func getCheat() -> Bool {
+        return model.cheat
+    }
+    
+    func changeCheat() {
+        model.changeCheat()
     }
     
 }

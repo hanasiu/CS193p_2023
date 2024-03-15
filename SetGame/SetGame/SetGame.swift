@@ -1,13 +1,13 @@
 //model
 import Foundation
 
-// where CardInfo: CardProtocol
-//struct SetGame<CardInfo: CardProtocol>
+
 struct SetGame<CardInfo: CardProtocol> {
     private(set) var cards: Array<Card>
     
     var score = 0
     var timer = Date()
+    var cheat = false
     
     private var setCardsNumber = 81
     
@@ -20,9 +20,7 @@ struct SetGame<CardInfo: CardProtocol> {
     }
     
     private var chosenCards: [Card] = []
-    var possibleCorrectCards: [[Card]] = []
-    
-    //var possibleCorrectCards: [[Card]]
+    private(set) var possibleCorrectCards: [[Card]] = []
     
     enum ThreeStates: String {
         case allSame = "allSame"
@@ -57,15 +55,6 @@ struct SetGame<CardInfo: CardProtocol> {
         let shadingResults = checkAttributes(chosenCards.map { $0.shading })
         let colorResults = checkAttributes(chosenCards.map { $0.color })
 
-        // Simplified logic to determine the overall state
-//        let results = [numberResults, shapeResults, shadingResults, colorResults]
-//        if results.contains(nil) {
-//            threeStatesBool = .other
-//        } else if results.allSatisfy({ $0 == true }) || results.allSatisfy({ $0 == false }) {
-//            threeStatesBool = .allSame
-//        } else {
-//            threeStatesBool = .allDifferent
-//        }
         return numberResults && shapeResults && shadingResults && colorResults
     }
     
@@ -79,26 +68,10 @@ struct SetGame<CardInfo: CardProtocol> {
         let shadingResults = checkAttributes(possibleCards.map { $0.shading })
         let colorResults = checkAttributes(possibleCards.map { $0.color })
 
-        // Simplified logic to determine the overall state
-//        let results = [numberResults, shapeResults, shadingResults, colorResults]
-//        if results.contains(nil) {
-//            threeStatesBool = .other
-//        } else if results.allSatisfy({ $0 == true }) || results.allSatisfy({ $0 == false }) {
-//            threeStatesBool = .allSame
-//        } else {
-//            threeStatesBool = .allDifferent
-//        }
         return numberResults && shapeResults && shadingResults && colorResults
     }
     
-//
-//    func checkChosenCards(ob: [Card]) -> Bool {
-//        if(ob[0].shading == ob[1].shading && ob[0] == ob[2]) {
-//            
-//        }
-//    }
-    
-    func combos<T: Hashable>(elements: ArraySlice<T>, k: Int) -> [[T]] {
+    private func combos<T: Hashable>(elements: ArraySlice<T>, k: Int) -> [[T]] {
         if k == 0 {
             return [[]]
         }
@@ -117,30 +90,14 @@ struct SetGame<CardInfo: CardProtocol> {
         return ret
     }
 
-    func combos<T: Hashable>(elements: Array<T>, k: Int) -> [[T]] {
+    private func combos<T: Hashable>(elements: Array<T>, k: Int) -> [[T]] {
         return combos(elements: ArraySlice(elements), k: k)
     }
-//
+
     mutating func filterPossibleCorrectCards() {
         possibleCorrectCards = []
-        let visibleCards = cards.filter { $0.isSeen == true }
-        //combos<Card>(elements: visibleCards, k: 3)
-//        for i in 0..<visibleCards.count - 2 {
-//            for j in i+1..<visibleCards.count - 1 {
-//                for k in j+1..<visibleCards.count {
-//                    if checkChosenCards(possibleCards: [visibleCards[i], visibleCards[j], visibleCards[k]]) {
-//                        possibleCorrectCards.append([visibleCards[i], visibleCards[j], visibleCards[k]])
-//                    }
-//                }
-//            }
-//        }
-//        combos<Card>(elements: visibleCards, k: 3).filter { checkChosenCards(possibleCards: $0) }
-        print(visibleCards.count)
-        print(combos<Card>(elements: visibleCards, k: 3).count)
-        possibleCorrectCards = combos<Card>(elements: visibleCards, k: 3).filter { checkChosenCards(possibleCards: $0) }
-       // print(possibleCorrectCards)
-        print(possibleCorrectCards.count)
-    
+        let visibleCards = cards.filter { $0.isFaceUp == true }.prefix(30)
+        possibleCorrectCards = Array(combos<Card>(elements: visibleCards, k: 3).filter { checkChosenCards(possibleCards: $0) }.prefix(9))
     }
     
     
@@ -153,27 +110,22 @@ struct SetGame<CardInfo: CardProtocol> {
                 cards.append(Card(id: "\(index+1)", number: info.number,
                                   shape: info.shape,
                                   shading: info.shading,
-                                  color: info.color, chosen: false, isMatched: false, isSeen: true
+                                  color: info.color, isChosen: false, isMatched: false, isFaceUp: true
                                  ))
             } else {
                 cards.append(Card(id: "\(index+1)", number: info.number,
                                   shape: info.shape,
                                   shading: info.shading,
-                                  color: info.color, chosen: false, isMatched: false, isSeen: false
+                                  color: info.color, isChosen: false, isMatched: false, isFaceUp: false
                                  ))
             }
         }
         filterPossibleCorrectCards()
     }
     
-    func countCards() -> Int {
-        return cards.count
+    mutating func changeCheat() {
+        cheat = !cheat
     }
-    
-    func getScore() -> Int {
-        return score
-    }
-    
     mutating func choose(_ card: Card) {
         if let chosenIndex = cards.firstIndex(where: {
             $0.id == card.id
@@ -181,23 +133,23 @@ struct SetGame<CardInfo: CardProtocol> {
             if(checkChosenCards()) {
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
                 {
-                    cards[i].isSeen = false
+                    cards[i].isFaceUp = false
                 }
                 
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
                 {
-                    cards[i].isSeen = false
+                    cards[i].isFaceUp = false
                 }
                 
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                 {
-                    cards[i].isSeen = false
+                    cards[i].isFaceUp = false
                 }
                 chosenCards.removeAll()
                 seenCardsNumber += 3
                 if(seenCardsNumber < setCardsNumber) {
                     for index in seenCardsNumber-3 ..< seenCardsNumber {
-                        cards[index].isSeen = true
+                        cards[index].isFaceUp = true
                     }
                 }
                 score = (200-10*Int(timer.distance(to: Date()).rounded(.down))) > 100 ? score + 200 - 10*Int(timer.distance(to: Date()).rounded(.down)) : (score + 100)
@@ -205,112 +157,33 @@ struct SetGame<CardInfo: CardProtocol> {
             } else if(chosenCards.count == 3) {
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
                 {
-                    cards[i].chosen = false
+                    cards[i].isChosen = false
                 }
                 
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
                 {
-                    cards[i].chosen = false
+                    cards[i].isChosen = false
                 }
                 
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                 {
-                    cards[i].chosen = false
+                    cards[i].isChosen = false
                 }
                 chosenCards.removeAll()
                 score -= 50
             }
-            
-//            if(chosenCards.count == 3) {
-//                if (checkChosenCards()) {
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-//                    {
-//                        cards[i].isSeen = false
-//                    }
-//                    
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-//                    {
-//                        cards[i].isSeen = false
-//                    }
-//                    
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-//                    {
-//                        cards[i].isSeen = false
-//                    }
-//                    chosenCards.removeAll()
-//                    seenCardsNumber += 3
-//                    if(seenCardsNumber <= setCardsNumber) {
-//                        for index in seenCardsNumber-3 ..< seenCardsNumber {
-//                            cards[index].isSeen = true
-//                        }
-//                    }
-//                } else {
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-//                    {
-//                        cards[i].chosen = false
-//                    }
-//                    
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-//                    {
-//                        cards[i].chosen = false
-//                    }
-//                    
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-//                    {
-//                        cards[i].chosen = false
-//                    }
-//                    chosenCards.removeAll()
-//                }
-//            }
-            
-            if(cards[chosenIndex].chosen) {
-                cards[chosenIndex].chosen = !cards[chosenIndex].chosen
+
+            if(cards[chosenIndex].isChosen) {
+                cards[chosenIndex].isChosen = !cards[chosenIndex].isChosen
                 chosenCards.removeAll( where: { $0.id == cards[chosenIndex].id } )
-                cards[chosenIndex].chosen = false
+                cards[chosenIndex].isChosen = false
             } else if(chosenCards.count < 3) {
-                cards[chosenIndex].chosen = true
+                cards[chosenIndex].isChosen = true
                 chosenCards.append(cards[chosenIndex])
                 if(chosenCards.count == 1) {
                     timer = Date()
                 }
             }
-            
-//            if(chosenCards.count == 3) {
-//                if (checkChosenCards()) {
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-//                    {
-//                        cards[i].isMatched = true
-//                    }
-//                    
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-//                    {
-//                        cards[i].isMatched = true
-//                    }
-//                    
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-//                    {
-//                        cards[i].isMatched = true
-//                    }
-//                    if(cards.allSatisfy { $0.isMatched })
-//                    {
-//                        if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-//                        {
-//                            cards[i].isSeen = false
-//                        }
-//                        
-//                        if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-//                        {
-//                            cards[i].isSeen = false
-//                        }
-//                        
-//                        if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-//                        {
-//                            cards[i].isSeen = false
-//                        }
-//                    }
-//                }
-//            }
-//            
             
             if (checkChosenCards()) {
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
@@ -331,21 +204,20 @@ struct SetGame<CardInfo: CardProtocol> {
                 {
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
                     {
-                        cards[i].isSeen = false
+                        cards[i].isFaceUp = false
                     }
                     
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
                     {
-                        cards[i].isSeen = false
+                        cards[i].isFaceUp = false
                     }
                     
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                     {
-                        cards[i].isSeen = false
+                        cards[i].isFaceUp = false
                     }
                 }
             }
-            
         }
     }
     
@@ -357,33 +229,33 @@ struct SetGame<CardInfo: CardProtocol> {
                  {
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
                     {
-                        cards[i].isSeen = false
+                        cards[i].isFaceUp = false
                     }
                     
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
                     {
-                        cards[i].isSeen = false
+                        cards[i].isFaceUp = false
                     }
                     
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                     {
-                        cards[i].isSeen = false
+                        cards[i].isFaceUp = false
                     }
                     chosenCards.removeAll()
                     seenCardsNumber += 3
                     if(seenCardsNumber <= setCardsNumber) {
                         for index in seenCardsNumber-3 ..< seenCardsNumber {
-                            cards[index].isSeen = true
+                            cards[index].isFaceUp = true
                         }
                     }
                 } 
             
-            if(cards[chosenIndex].chosen) {
-                cards[chosenIndex].chosen = !cards[chosenIndex].chosen
+            if(cards[chosenIndex].isChosen) {
+                cards[chosenIndex].isChosen = !cards[chosenIndex].isChosen
                 chosenCards.removeAll( where: { $0.id == cards[chosenIndex].id } )
-                cards[chosenIndex].chosen = false
+                cards[chosenIndex].isChosen = false
             } else if(chosenCards.count < 3) {
-                cards[chosenIndex].chosen = true
+                cards[chosenIndex].isChosen = true
                 chosenCards.append(cards[chosenIndex])
             }
             
@@ -407,17 +279,17 @@ struct SetGame<CardInfo: CardProtocol> {
                     {
                         if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
                         {
-                            cards[i].isSeen = false
+                            cards[i].isFaceUp = false
                         }
                         
                         if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
                         {
-                            cards[i].isSeen = false
+                            cards[i].isFaceUp = false
                         }
                         
                         if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                         {
-                            cards[i].isSeen = false
+                            cards[i].isFaceUp = false
                         }
                     }
                 }
@@ -434,24 +306,24 @@ struct SetGame<CardInfo: CardProtocol> {
            {
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
                 {
-                    cards[i].isSeen = false
+                    cards[i].isFaceUp = false
                 }
                 
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
                 {
-                    cards[i].isSeen = false
+                    cards[i].isFaceUp = false
                 }
                 
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                 {
-                    cards[i].isSeen = false
+                    cards[i].isFaceUp = false
                 }
                 chosenCards.removeAll()
             }
         seenCardsNumber += 3
         if(seenCardsNumber <= setCardsNumber) {
             for index in seenCardsNumber-3 ..< seenCardsNumber {
-                cards[index].isSeen = true
+                cards[index].isFaceUp = true
             }
         }
         filterPossibleCorrectCards()
@@ -495,14 +367,12 @@ struct SetGame<CardInfo: CardProtocol> {
         var shading: String
         var color: String
         
-        var chosen: Bool
+        var isChosen: Bool
         
         var isMatched: Bool
         
-        var isSeen: Bool
+        var isFaceUp: Bool
     }
-    
-    
 }
 
 protocol CardProtocol {
