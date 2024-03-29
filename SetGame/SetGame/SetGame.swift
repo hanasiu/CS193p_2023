@@ -1,17 +1,27 @@
 //model
 import Foundation
 
-
-struct SetGame<CardInfo: CardProtocol> {
+//<CardInfo: CardProtocol>
+struct SetGame{
     private(set) var cards: Array<Card>
     
-    var score = 0
-    var timer = Date()
-    var cheat = false
+    private(set) var score = 0
+    private(set) var timer = Date()
+    private(set) var cheat = false
+    
+    private var cheatNotifer: Bool {
+        possibleCorrectCards.count > 0
+    }
+    
+    func getCheatNotifer() -> Bool {
+        return cheatNotifer
+    }
     
     private var setCardsNumber = 81
     
-    private var seenCardsNumber = 12 {
+    private(set) var matchedWhenAddingCards = false
+    
+    private var seenCardsNumber = 0 {
         didSet {
             if seenCardsNumber > setCardsNumber {
                 seenCardsNumber = setCardsNumber
@@ -19,14 +29,34 @@ struct SetGame<CardInfo: CardProtocol> {
         }
     }
     
+    func getSeenCardsNumber() -> Int {
+        seenCardsNumber
+    }
+    
+    mutating func initializeSeenCard() {
+        seenCardsNumber = 12
+        for index in 0..<seenCardsNumber  {
+            cards[index].isFaceUp = true
+        }
+        filterPossibleCorrectCards()
+    }
+    
     private var chosenCards: [Card] = []
-    private(set) var possibleCorrectCards: [[Card]] = []
+    private(set) var possibleCorrectCards: [[Card]] = [] {
+        didSet {
+            //if previous possibleCorrectCards == 0 and current possibleCorrectCards > 0, timer gets started
+            if oldValue.count == 0 && possibleCorrectCards.count > 0 {
+                timer = Date()
+            }
+        }
+    }
     
     enum ThreeStates: String {
         case allSame = "allSame"
         case allDifferent = "allDifferent"
         case other = "other"
     }
+    
     
     private var threeStatesBool: ThreeStates = .other
     
@@ -56,6 +86,19 @@ struct SetGame<CardInfo: CardProtocol> {
         let colorResults = checkAttributes(chosenCards.map { $0.color })
 
         return numberResults && shapeResults && shadingResults && colorResults
+    }
+    
+    func checkChosenCardsForAnimation() -> Bool {
+        guard chosenCards.count == 3 else {
+            return false
+        }
+
+        let numberResults = checkAttributes(chosenCards.map { $0.number })
+        let shapeResults = checkAttributes(chosenCards.map { $0.shape })
+        let shadingResults = checkAttributes(chosenCards.map { $0.shading })
+        let colorResults = checkAttributes(chosenCards.map { $0.color })
+
+        return !(numberResults && shapeResults && shadingResults && colorResults)
     }
     
     private func checkChosenCards(possibleCards: [Card]) -> Bool {
@@ -96,35 +139,69 @@ struct SetGame<CardInfo: CardProtocol> {
 
     mutating func filterPossibleCorrectCards() {
         possibleCorrectCards = []
-        let visibleCards = cards.filter { $0.isFaceUp == true }.prefix(30)
+        let visibleCards = cards.filter { $0.isFaceUp && !$0.isMatched }.prefix(30)
         possibleCorrectCards = Array(combos<Card>(elements: visibleCards, k: 3).filter { checkChosenCards(possibleCards: $0) }.prefix(9))
     }
     
     
     
-    init(cardInfoFactory: (Int) -> CardInfo) {
+    init(cardInfoFactory: (Int) -> CardProtocol) {
         cards = []
         for index in 0 ..< setCardsNumber {
             let info = cardInfoFactory(index)
-            if(index < seenCardsNumber) {
-                cards.append(Card(id: "\(index+1)", number: info.number,
-                                  shape: info.shape,
-                                  shading: info.shading,
-                                  color: info.color, isChosen: false, isMatched: false, isFaceUp: true
-                                 ))
-            } else {
-                cards.append(Card(id: "\(index+1)", number: info.number,
-                                  shape: info.shape,
-                                  shading: info.shading,
-                                  color: info.color, isChosen: false, isMatched: false, isFaceUp: false
-                                 ))
-            }
+            cards.append(Card(id: "\(index+1)", number: info.number,
+                              shape: info.shape,
+                              shading: info.shading,
+                              color: info.color, isChosen: false, isMatched: false, isFaceUp: false
+                             ))
         }
         filterPossibleCorrectCards()
+        timer = Date()
+    }
+    
+    mutating func startNewGame() {
+        for index in cards.indices {
+            cards[index].isFaceUp = false
+            cards[index].isChosen = false
+            cards[index].isMatched = false
+        }
+        cards.shuffle()
+//        for index in 0..<12 {
+//            cards[index].isFaceUp = true
+//        }
+        filterPossibleCorrectCards()
+        seenCardsNumber = 0
+        score = 0
+        timer = Date()
+        cheat = false
+    }
+    
+    mutating func shuffle() {
+        let faceUpCardIndices = cards.indices.filter { cards[$0].isFaceUp && !cards[$0].isMatched }
+        let faceUpCardsToShuffle = faceUpCardIndices.map { cards[$0] }.shuffled()
+
+        for (index, cardIndex) in faceUpCardIndices.enumerated() {
+            cards[cardIndex] = faceUpCardsToShuffle[index]
+        }
     }
     
     mutating func changeCheat() {
         cheat = !cheat
+    }
+    
+    mutating func makeFaceUp() {
+        
+    }
+    
+//    mutating func falsifyAllMatchedWhenAddingCards() {
+//        for var card in cards {
+//            card.matchedWhenAddingCards = false
+//        }
+//    }
+    
+    mutating func makeChosenAndMatchedFalse(index: Int) {
+        cards[index].isMatched = false
+        cards[index].isChosen = false
     }
     mutating func choose(_ card: Card) {
         if let chosenIndex = cards.firstIndex(where: {
@@ -133,26 +210,19 @@ struct SetGame<CardInfo: CardProtocol> {
             if(checkChosenCards()) {
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
                 {
-                    cards[i].isFaceUp = false
+                    cards[i].isChosen = false
                 }
                 
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
                 {
-                    cards[i].isFaceUp = false
+                    cards[i].isChosen = false
                 }
-                
+       
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                 {
-                    cards[i].isFaceUp = false
+                    cards[i].isChosen = false
                 }
                 chosenCards.removeAll()
-                seenCardsNumber += 3
-                if(seenCardsNumber < setCardsNumber) {
-                    for index in seenCardsNumber-3 ..< seenCardsNumber {
-                        cards[index].isFaceUp = true
-                    }
-                }
-                score = (200-10*Int(timer.distance(to: Date()).rounded(.down))) > 100 ? score + 200 - 10*Int(timer.distance(to: Date()).rounded(.down)) : (score + 100)
                 filterPossibleCorrectCards()
             } else if(chosenCards.count == 3) {
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
@@ -170,7 +240,7 @@ struct SetGame<CardInfo: CardProtocol> {
                     cards[i].isChosen = false
                 }
                 chosenCards.removeAll()
-                score -= 50
+                filterPossibleCorrectCards()
             }
 
             if(cards[chosenIndex].isChosen) {
@@ -180,9 +250,6 @@ struct SetGame<CardInfo: CardProtocol> {
             } else if(chosenCards.count < 3) {
                 cards[chosenIndex].isChosen = true
                 chosenCards.append(cards[chosenIndex])
-                if(chosenCards.count == 1) {
-                    timer = Date()
-                }
             }
             
             if (checkChosenCards()) {
@@ -200,25 +267,29 @@ struct SetGame<CardInfo: CardProtocol> {
                 {
                     cards[i].isMatched = true
                 }
+                score = (200-10*Int(timer.distance(to: Date()).rounded(.down))) > 100 ? score + 200 - 10*Int(timer.distance(to: Date()).rounded(.down)) : (score + 100)
                 if(cards.allSatisfy { $0.isMatched })
                 {
-                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-                    {
-                        cards[i].isFaceUp = false
-                    }
-                    
-                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-                    {
-                        cards[i].isFaceUp = false
-                    }
-                    
-                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-                    {
-                        cards[i].isFaceUp = false
-                    }
+//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
+//                    {
+//                        cards[i].isFaceUp = false
+//                    }
+//                    
+//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
+//                    {
+//                        cards[i].isFaceUp = false
+//                    }
+//                    
+//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
+//                    {
+//                        cards[i].isFaceUp = false
+//                    }
+       
                 }
+               // filterPossibleCorrectCards()
             }
         }
+        filterPossibleCorrectCards()
     }
     
     mutating func testChoose(_ card: Card) {
@@ -301,25 +372,70 @@ struct SetGame<CardInfo: CardProtocol> {
         return chosenCards.count
     }
     
+    func getPassedTime() -> Double {
+        timer.distance(to: Date()).rounded(.down)
+    }
+    
+//    mutating func addSeenCards() {
+//        seenCardsNumber += 3
+//        if(seenCardsNumber <= setCardsNumber) {
+//            for index in seenCardsNumber-3 ..< seenCardsNumber {
+//                cards[index].isFaceUp = true
+//            }
+//        }
+//    }
     mutating func addSeenCards() {
-        if(checkChoosenCardsMatched())
-           {
-                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-                {
-                    cards[i].isFaceUp = false
-                }
-                
-                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-                {
-                    cards[i].isFaceUp = false
-                }
-                
-                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-                {
-                    cards[i].isFaceUp = false
-                }
-                chosenCards.removeAll()
+        filterPossibleCorrectCards()
+        if  possibleCorrectCards.count > 0 {
+            score -= 50
+        }
+        
+        if(checkChosenCards()) {
+            if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
+            {
+                cards[i].isChosen = false
             }
+            
+            if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
+            {
+                cards[i].isChosen = false
+            }
+            
+            if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
+            {
+                cards[i].isChosen = false
+            }
+            matchedWhenAddingCards = true
+            
+            chosenCards.removeAll()
+//            score = (200-10*Int(timer.distance(to: Date()).rounded(.down))) > 100 ? score + 200 - 10*Int(timer.distance(to: Date()).rounded(.down)) : (score + 100)
+        } else {
+            matchedWhenAddingCards = false
+        }
+        
+//        if(checkChoosenCardsMatched())
+//           {
+//                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
+//                {
+//                    cards[i].isFaceUp = false
+//                }
+//
+//                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
+//                {
+//                    cards[i].isFaceUp = false
+//                }
+//
+//                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
+//                {
+//                    cards[i].isFaceUp = false
+//                }
+//                chosenCards.removeAll()
+//            }
+//        if(possibleCorrectCards.count > 1) {
+//            score -= 100
+//        }
+
+//        filterPossibleCorrectCards()
         seenCardsNumber += 3
         if(seenCardsNumber <= setCardsNumber) {
             for index in seenCardsNumber-3 ..< seenCardsNumber {
@@ -327,6 +443,7 @@ struct SetGame<CardInfo: CardProtocol> {
             }
         }
         filterPossibleCorrectCards()
+
     }
     
     func checkSeenCardsIsEqualToSetCards() -> Bool {
@@ -359,7 +476,7 @@ struct SetGame<CardInfo: CardProtocol> {
         return false
     }
     
-    struct Card: Identifiable, Equatable, Hashable {
+    struct Card: Identifiable, Equatable, Hashable, IsMatchedAndChosen {
         var id: String
         
         var number: Int
@@ -369,7 +486,18 @@ struct SetGame<CardInfo: CardProtocol> {
         
         var isChosen: Bool
         
-        var isMatched: Bool
+        var isMatched: Bool 
+//        {
+//            didSet {
+//                if isMatched && !oldValue {
+//                    matchedWhenAddingCards = true
+//                } else {
+//                    matchedWhenAddingCards = false
+//                }
+//            }
+//        }
+        
+       // var matchedWhenAddingCards = false
         
         var isFaceUp: Bool
     }
@@ -380,13 +508,4 @@ protocol CardProtocol {
     var shape: String { get }
     var shading: String { get }
     var color: String { get }
-}
-struct CardExample:CardProtocol {
-    var number: Int
-    
-    var shape: String
-    
-    var shading: String
-    
-    var color: String
 }

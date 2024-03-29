@@ -1,8 +1,10 @@
 //View-Model
 
 import Foundation
+import SwiftUI
 
 class CardSetGame: ObservableObject {
+    typealias Card = SetGame.Card
     func generateAllCards() -> [CardExample] {
         var cards:[CardExample] = []
         
@@ -28,9 +30,27 @@ class CardSetGame: ObservableObject {
     init() {
         cardInfos = generateAllCards()
         cardInfos.shuffle()
-        model = createSetGame()
+        setGame = createSetGame()
     }
-    private func createSetGame() -> SetGame<CardExample> {
+    private func createSetGame() -> SetGame {
+        SetGame() { pairIndex in
+            if cardInfos.indices.contains(pairIndex) {
+                return cardInfos[pairIndex]
+            } else {
+                return CardExample(number: 1, shape: "diamond", shading: "open", color: "green")
+            }
+        }
+    }
+    
+    func initializeSeenCards() {
+        setGame.initializeSeenCard()
+    }
+    
+    func getSeenCardsNumber() -> Int {
+        setGame.getSeenCardsNumber()
+    }
+    
+    private func addCards() -> SetGame {
         SetGame() { pairIndex in
             
             if cardInfos.indices.contains(pairIndex) {
@@ -40,76 +60,111 @@ class CardSetGame: ObservableObject {
             }
         }
     }
+    @Published private var setGame: SetGame!
     
-    private func addCards() -> SetGame<CardExample> {
-        SetGame() { pairIndex in
-            
-            if cardInfos.indices.contains(pairIndex) {
-                return cardInfos[pairIndex]
-            } else {
-                return CardExample(number: 1, shape: "diamond", shading: "open", color: "green")
-            }
-        }
-    }
-    @Published private var model: SetGame<CardExample>!
-    
-    var cards: Array<SetGame<CardExample>.Card> {
-        return model.cards
+    var cards: Array<Card> {
+        return setGame.cards
     }
     
-    var possibleCorrectCards: Array<Array<SetGame<CardExample>.Card>> {
-        return model.possibleCorrectCards
+
+    var color: Color {
+        .blue
+    }
+    
+    func getMatchedWhenAddingCards() -> Bool {
+        return setGame.matchedWhenAddingCards
+    }
+    
+    var possibleCorrectCards: Array<Array<Card>> {
+        return setGame.possibleCorrectCards
     }
     
     func countCards() -> Int {
-        return model.cards.count
+        return setGame.cards.count
     }
+    
+    func checkChosenCardsForAnimation() -> Bool {
+        return setGame.checkChosenCardsForAnimation()
+    }
+//    func falsifyAllMatchedWhenAddingCards() {
+//        setGame.falsifyAllMatchedWhenAddingCards()
+//    }
     
     func getScore() -> Int {
-        return model.score
+        return setGame.score
     }
     
-    func choose(_ card: SetGame<CardExample>.Card) {
-        model.choose(card)
+    func choose(_ card: Card) {
+        setGame.choose(card)
     }
     
     
-    func testChoose(_ card: SetGame<CardExample>.Card) {
-        model.testChoose(card)
+    func testChoose(_ card: Card) {
+        setGame.testChoose(card)
     }
     
     func countChosenCards() -> Int {
-        return model.countChosenCards()
+        return setGame.countChosenCards()
     }
     
     func addSeenCards() {
-        model.addSeenCards()
+        setGame.addSeenCards()
     }
     
     func checkSeenCardsIsEqualToSetCards() -> Bool {
-        return model.checkSeenCardsIsEqualToSetCards()
+        return setGame.checkSeenCardsIsEqualToSetCards()
     }
     
-    func newGame() {
-        cardInfos.shuffle()
-        model = createSetGame()
+    func startNewGame() {
+        setGame.startNewGame()
+//        cardInfos.shuffle()
+//        setGame = createSetGame()
+        
+//        cardInfos = generateAllCards()
+//        cardInfos.shuffle()
+//        setGame = createSetGame()
+    }
+    
+    func getCheatNotifer() -> Bool {
+        return setGame.getCheatNotifer()
+    }
+
+    
+    func makeChosenAndMatchedFalse(index: Int) {
+        setGame.makeChosenAndMatchedFalse(index: index)
+    }
+    
+    func shuffle() {
+        setGame.shuffle()
     }
     
     func filterPossibleCorrectCards() {
-       model.filterPossibleCorrectCards()
+       setGame.filterPossibleCorrectCards()
     }
     
     func getCheat() -> Bool {
-        return model.cheat
+        return setGame.cheat
     }
     
     func changeCheat() {
-        model.changeCheat()
+        setGame.changeCheat()
+    }
+    
+    func getTime() -> Double {
+        setGame.getPassedTime()
     }
     
 }
 
-
+struct CardExample: CardProtocol {
+    var number: Int
+    
+    var shape: String
+    
+    var shading: String 
+    
+    var color: String
+}
 
 enum CardNumber: Int, CaseIterable {
     case one = 1

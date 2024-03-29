@@ -6,7 +6,7 @@ struct SetGameApp: App {
     @StateObject var game = CardSetGame()
     var body: some Scene {
         WindowGroup {
-            SetGameView(viewModel: game)
+            SetGameView(setGameViewer: game)
         }
     }
 }

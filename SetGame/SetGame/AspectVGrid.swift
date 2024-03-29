@@ -1,6 +1,12 @@
 import SwiftUI
 
-struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
+
+protocol IsMatchedAndChosen {
+    var isMatched: Bool { get }
+    var isChosen: Bool { get }
+}
+
+struct AspectVGrid<Item: Identifiable & IsMatchedAndChosen, ItemView: View>: View {
     let items: [Item]
     var aspectRatio: CGFloat = 1
     let content: (Item) -> ItemView
@@ -12,13 +18,14 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
     }
     
     var body: some View {
-        GeometryReader { geometry in
-            let gridItemSize = max(gridItemWidthThatFits(
-                count: items.count,
-                size: geometry.size,
-                atAspectRatio: aspectRatio
-            ), 90)
-            
+     
+            GeometryReader { geometry in
+                let gridItemSize = max(gridItemWidthThatFits(
+                    //for three cards chosen
+                    count: items.filter { (!$0.isMatched && !$0.isChosen) || $0.isChosen }.count,
+                    size: geometry.size,
+                    atAspectRatio: aspectRatio
+                ), 90)
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
                         ForEach(items) { item in
@@ -26,10 +33,10 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
                                 .aspectRatio(aspectRatio, contentMode: .fit)
                         }
                     }
-                }
-  
+                }.animation(.spring, value: gridItemSize)
+            }
         }
-    }
+
     
     private func gridItemWidthThatFits(
         count: Int,

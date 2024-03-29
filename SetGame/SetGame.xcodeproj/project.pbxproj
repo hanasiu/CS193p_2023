@@ -21,6 +21,7 @@
 		76F549432B7B52C4009A70C2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76F549422B7B52C4009A70C2 /* Preview Assets.xcassets */; };
 		76F5494A2B7B531C009A70C2 /* SetGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F549492B7B531C009A70C2 /* SetGame.swift */; };
 		76F5494C2B7B53EC009A70C2 /* CardSetGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F5494B2B7B53EC009A70C2 /* CardSetGame.swift */; };
+		76F8362D2BA6DD8900254C7B /* FlyingNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F8362C2BA6DD8900254C7B /* FlyingNumber.swift */; };
 		76FEAE612B98392C000F6EFF /* Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FEAE602B98392C000F6EFF /* Stripe.swift */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		76F549422B7B52C4009A70C2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		76F549492B7B531C009A70C2 /* SetGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGame.swift; sourceTree = "<group>"; };
 		76F5494B2B7B53EC009A70C2 /* CardSetGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSetGame.swift; sourceTree = "<group>"; };
+		76F8362C2BA6DD8900254C7B /* FlyingNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FlyingNumber.swift; path = ../FlyingNumber.swift; sourceTree = "<group>"; };
 		76FEAE602B98392C000F6EFF /* Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stripe.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -75,8 +77,8 @@
 			children = (
 				76FEAE622B9843DC000F6EFF /* Shape */,
 				76F5493B2B7B52C3009A70C2 /* SetGameApp.swift */,
-				76F5493D2B7B52C3009A70C2 /* SetGameView.swift */,
 				76F549492B7B531C009A70C2 /* SetGame.swift */,
+				76F5493D2B7B52C3009A70C2 /* SetGameView.swift */,
 				76F5494B2B7B53EC009A70C2 /* CardSetGame.swift */,
 				76931DE12B7F3C16004E6FE9 /* AspectVGrid.swift */,
 				76F5493F2B7B52C4009A70C2 /* Assets.xcassets */,
@@ -85,6 +87,7 @@
 				76B8D7AE2B9067940078BBD4 /* ThreeAspectVGrid.swift */,
 				76CCB7DE2BA14A4700CC15E7 /* CardView.swift */,
 				76CCB7E02BA14AA200CC15E7 /* Cardify.swift */,
+				76F8362C2BA6DD8900254C7B /* FlyingNumber.swift */,
 			);
 			path = SetGame;
 			sourceTree = "<group>";
@@ -179,6 +182,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				76F5494C2B7B53EC009A70C2 /* CardSetGame.swift in Sources */,
+				76F8362D2BA6DD8900254C7B /* FlyingNumber.swift in Sources */,
 				76F5493E2B7B52C3009A70C2 /* SetGameView.swift in Sources */,
 				762616CB2B96EB18003DF320 /* Squiggle.swift in Sources */,
 				76931DE22B7F3C16004E6FE9 /* AspectVGrid.swift in Sources */,

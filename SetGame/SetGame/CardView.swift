@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct CardView: View {
-    let card: SetGame<CardExample>.Card
+    let card: SetGame.Card
+    let isVibrate: Bool
+    private let vibrate: Animation = .linear(duration: 0.1).repeatForever()
     
-    init(_ card: SetGame<CardExample>.Card) {
+    init(_ card: SetGame.Card, _ isVibrate: Bool) {
         self.card = card
+        self.isVibrate = isVibrate
     }
    
     var body: some View {
@@ -19,7 +22,15 @@ struct CardView: View {
             //let base = RoundedRectangle(cornerRadius: 12)
            // Group {
 //                base.fill(.white).strokeBorder(card.chosen ? card.isMatched ? .green : .red : .blue, lineWidth: card.chosen ? card.isMatched ? 10 : 6 : 4)
-                symbolBox.cardify(isFaceUp: card.isFaceUp, isMatched: card.isMatched, isChosen: card.isChosen)
+              cardContents
+            .cardify(isFaceUp: card.isFaceUp, isMatched:
+                            card.isMatched, isChosen: card.isChosen)
+        //    .animation(.linear(duration: 2), value: card.isFaceUp)
+            .transition(.scale)
+        
+
+          //  .transition(.asymmetric(insertion: .identity, removal: .identity))
+
         
 //                .overlay(cardContents)
             
@@ -29,6 +40,15 @@ struct CardView: View {
     
     var cardContents: some View {
         symbolBox
+            .offset(x: isVibrate && card.isChosen ? -15 : 0)
+            .animation(isVibrate ? vibrate : Animation.default, value: isVibrate)
+            .rotationEffect(.degrees(card.isMatched ? 720 : 0))
+//            .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: card.isMatched)
+//            .rotationEffect(.degrees(!card.isMatched && card.isChosen ? 10 : 0))
+        
+            //.rotationEffect(.degrees(!card.isMatched ? 180 : 0))
+//
+            
     }
     
     private var symbolBox: some View {
@@ -46,10 +66,10 @@ struct CardView: View {
             .fill(getColor())
             .overlay(
                 Squiggle()
-                    .stroke(getBorderColor(), lineWidth: card.shading == "open" || card.shading == "striped" ? 3.0 : 0.0)
+                    .stroke(getBorderColor(), lineWidth: card.shading == "open" || card.shading == "striped" ? 4.0 : 0.0)
             )
             .overlay(Stripe()
-                .stroke(getBorderColor(), lineWidth: card.shading == "striped" ? 3.0 : 0.0))
+                .stroke(getBorderColor(), lineWidth: card.shading == "striped" ? 4.0 : 0.0))
             .clipShape(Squiggle())
             .aspectRatio(1/2, contentMode: .fit)
         
@@ -58,10 +78,10 @@ struct CardView: View {
             .overlay(
                 Ellipse()
                     .strokeBorder(getBorderColor(), lineWidth: card.shading == "open" || card.shading ==
-                                  "striped" ? 3.0 : 0.0)
+                                  "striped" ? 4.0 : 0.0)
             )
             .overlay(Stripe()
-                .stroke(getBorderColor(), lineWidth: card.shading == "striped" ? 3.0 : 0.0))
+                .stroke(getBorderColor(), lineWidth: card.shading == "striped" ? 4.0 : 0.0))
             .clipShape(Ellipse())
             .aspectRatio(1/2, contentMode: .fit)
         
@@ -69,10 +89,10 @@ struct CardView: View {
             .foregroundColor(getColor())
             .overlay(
                 Diamond()
-                    .stroke(getBorderColor(), lineWidth: card.shading == "open" || card.shading == "striped" ? 3.0 : 0.0)
+                    .stroke(getBorderColor(), lineWidth: card.shading == "open" || card.shading == "striped" ? 4.0 : 0.0)
             )
             .overlay(Stripe()
-                .stroke(getBorderColor(), lineWidth: card.shading == "striped" ? 3.0 : 0.0))
+                .stroke(getBorderColor(), lineWidth: card.shading == "striped" ? 4.0 : 0.0))
             .clipShape(Diamond())
             .aspectRatio(1/2, contentMode: .fit)
 
@@ -124,3 +144,8 @@ struct CardView: View {
     }
 }
 
+extension Animation {
+    static func spin(duration: TimeInterval) -> Animation {
+        .linear(duration: duration).repeatForever(autoreverses: false)
+    }
+}

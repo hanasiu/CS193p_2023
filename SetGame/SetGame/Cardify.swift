@@ -8,6 +8,7 @@ struct Cardify: ViewModifier, Animatable {
         self.isMatched = isMatched
         self.isChosen = isChosen
     }
+    
     var isFaceUp: Bool {
         rotation < 90
     }
@@ -27,22 +28,23 @@ struct Cardify: ViewModifier, Animatable {
         ZStack {
             let base = RoundedRectangle(cornerRadius: Constants.cornerRadius)
             base
-            
                // .strokeBorder(.red)
                 //.strokeBorder(lineWidth: Constants.lineWidth)
-                .strokeBorder(isChosen ? isMatched ? .green : .red : .blue, lineWidth: isChosen ? isMatched ? 8 : 6 : 4)
-                .shadow(color: .red, radius:0.1)
+                .strokeBorder(isFaceUp ? isChosen ? isMatched ? .green : .red : .blue : .blue, lineWidth: isFaceUp ? isChosen ? isMatched ?  8 : 6 : 4 : 4)
                 .background(base.fill(.white))
+                .shadow(color: .red, radius:0.1)
                 .overlay(content)
                 .opacity(isFaceUp ? 1 : 0)
-            base.fill().opacity(isFaceUp ? 0 : 1)
-           
-            
+                base.fill().opacity(isFaceUp ? 0 : 1)
         }
         .rotation3DEffect(
             .degrees(rotation),
-            axis: (x: 1.0, y: 0.0, z: 0.0)
+            axis: (x: 0.0, y: 1.0, z: 0.0)
         )
+   //     / .animation(.spin(duration: 1), value: isFaceUp)
+
+//        .transition(.asymmetric(insertion: .identity, removal: .identity))
+   
     }
     
     private struct Constants {
