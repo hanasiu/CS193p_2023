@@ -10,9 +10,7 @@
 		762616CB2B96EB18003DF320 /* Squiggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762616CA2B96EB18003DF320 /* Squiggle.swift */; };
 		762616CD2B96EB3F003DF320 /* Diamond.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762616CC2B96EB3E003DF320 /* Diamond.swift */; };
 		7659157E2B7DF40C0008BDE7 /* data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7659157D2B7DF40C0008BDE7 /* data.swift */; };
-		766353AA2BA2DDAE0096B1CF /* CardPick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766353A92BA2DDAE0096B1CF /* CardPick.swift */; };
 		76931DE22B7F3C16004E6FE9 /* AspectVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76931DE12B7F3C16004E6FE9 /* AspectVGrid.swift */; };
-		76B8D7AF2B9067940078BBD4 /* ThreeAspectVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B8D7AE2B9067940078BBD4 /* ThreeAspectVGrid.swift */; };
 		76CCB7DF2BA14A4700CC15E7 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CCB7DE2BA14A4700CC15E7 /* CardView.swift */; };
 		76CCB7E12BA14AA200CC15E7 /* Cardify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CCB7E02BA14AA200CC15E7 /* Cardify.swift */; };
 		76F5493C2B7B52C3009A70C2 /* SetGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F5493B2B7B52C3009A70C2 /* SetGameApp.swift */; };
@@ -29,9 +27,7 @@
 		762616CA2B96EB18003DF320 /* Squiggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Squiggle.swift; sourceTree = "<group>"; };
 		762616CC2B96EB3E003DF320 /* Diamond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diamond.swift; sourceTree = "<group>"; };
 		7659157D2B7DF40C0008BDE7 /* data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = data.swift; sourceTree = "<group>"; };
-		766353A92BA2DDAE0096B1CF /* CardPick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPick.swift; sourceTree = "<group>"; };
 		76931DE12B7F3C16004E6FE9 /* AspectVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectVGrid.swift; sourceTree = "<group>"; };
-		76B8D7AE2B9067940078BBD4 /* ThreeAspectVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeAspectVGrid.swift; sourceTree = "<group>"; };
 		76CCB7DE2BA14A4700CC15E7 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		76CCB7E02BA14AA200CC15E7 /* Cardify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cardify.swift; sourceTree = "<group>"; };
 		76F549382B7B52C3009A70C2 /* SetGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SetGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,7 +80,6 @@
 				76F5493F2B7B52C4009A70C2 /* Assets.xcassets */,
 				76F549412B7B52C4009A70C2 /* Preview Content */,
 				7659157D2B7DF40C0008BDE7 /* data.swift */,
-				76B8D7AE2B9067940078BBD4 /* ThreeAspectVGrid.swift */,
 				76CCB7DE2BA14A4700CC15E7 /* CardView.swift */,
 				76CCB7E02BA14AA200CC15E7 /* Cardify.swift */,
 				76F8362C2BA6DD8900254C7B /* FlyingNumber.swift */,
@@ -106,7 +101,6 @@
 				762616CA2B96EB18003DF320 /* Squiggle.swift */,
 				762616CC2B96EB3E003DF320 /* Diamond.swift */,
 				76FEAE602B98392C000F6EFF /* Stripe.swift */,
-				766353A92BA2DDAE0096B1CF /* CardPick.swift */,
 			);
 			path = Shape;
 			sourceTree = "<group>";
@@ -186,10 +180,8 @@
 				76F5493E2B7B52C3009A70C2 /* SetGameView.swift in Sources */,
 				762616CB2B96EB18003DF320 /* Squiggle.swift in Sources */,
 				76931DE22B7F3C16004E6FE9 /* AspectVGrid.swift in Sources */,
-				76B8D7AF2B9067940078BBD4 /* ThreeAspectVGrid.swift in Sources */,
 				76F5494A2B7B531C009A70C2 /* SetGame.swift in Sources */,
 				76CCB7E12BA14AA200CC15E7 /* Cardify.swift in Sources */,
-				766353AA2BA2DDAE0096B1CF /* CardPick.swift in Sources */,
 				76FEAE612B98392C000F6EFF /* Stripe.swift in Sources */,
 				762616CD2B96EB3F003DF320 /* Diamond.swift in Sources */,
 				7659157E2B7DF40C0008BDE7 /* data.swift in Sources */,

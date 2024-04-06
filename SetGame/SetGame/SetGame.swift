@@ -1,7 +1,6 @@
 //model
 import Foundation
 
-//<CardInfo: CardProtocol>
 struct SetGame{
     private(set) var cards: Array<Card>
     
@@ -62,7 +61,7 @@ struct SetGame{
     
     private func checkAttributes<T: Equatable>(_ attributes: [T]) -> Bool {
         if(attributes.count != 3) { return false }
-
+        
         let allSame = attributes.allSatisfy { $0 == attributes.first }
         let allDifferent = attributes[0] != attributes[1] && attributes[1] != attributes[2] &&
         attributes[0] != attributes[2]
@@ -79,12 +78,12 @@ struct SetGame{
         guard chosenCards.count == 3 else {
             return false
         }
-
+        
         let numberResults = checkAttributes(chosenCards.map { $0.number })
         let shapeResults = checkAttributes(chosenCards.map { $0.shape })
         let shadingResults = checkAttributes(chosenCards.map { $0.shading })
         let colorResults = checkAttributes(chosenCards.map { $0.color })
-
+        
         return numberResults && shapeResults && shadingResults && colorResults
     }
     
@@ -92,12 +91,12 @@ struct SetGame{
         guard chosenCards.count == 3 else {
             return false
         }
-
+        
         let numberResults = checkAttributes(chosenCards.map { $0.number })
         let shapeResults = checkAttributes(chosenCards.map { $0.shape })
         let shadingResults = checkAttributes(chosenCards.map { $0.shading })
         let colorResults = checkAttributes(chosenCards.map { $0.color })
-
+        
         return !(numberResults && shapeResults && shadingResults && colorResults)
     }
     
@@ -110,7 +109,7 @@ struct SetGame{
         let shapeResults = checkAttributes(possibleCards.map { $0.shape })
         let shadingResults = checkAttributes(possibleCards.map { $0.shading })
         let colorResults = checkAttributes(possibleCards.map { $0.color })
-
+        
         return numberResults && shapeResults && shadingResults && colorResults
     }
     
@@ -118,25 +117,25 @@ struct SetGame{
         if k == 0 {
             return [[]]
         }
-
+        
         guard let first = elements.first else {
             return []
         }
-
+        
         let head = [first]
         let subcombos = combos(elements: elements, k: k - 1)
         var ret = subcombos.map { head + $0 }
         ret += combos(elements: elements.dropFirst(), k: k)
-
+        
         ret = ret.filter { Set($0).count == k }
         
         return ret
     }
-
+    
     private func combos<T: Hashable>(elements: Array<T>, k: Int) -> [[T]] {
         return combos(elements: ArraySlice(elements), k: k)
     }
-
+    
     mutating func filterPossibleCorrectCards() {
         possibleCorrectCards = []
         let visibleCards = cards.filter { $0.isFaceUp && !$0.isMatched }.prefix(30)
@@ -166,9 +165,6 @@ struct SetGame{
             cards[index].isMatched = false
         }
         cards.shuffle()
-//        for index in 0..<12 {
-//            cards[index].isFaceUp = true
-//        }
         filterPossibleCorrectCards()
         seenCardsNumber = 0
         score = 0
@@ -179,7 +175,7 @@ struct SetGame{
     mutating func shuffle() {
         let faceUpCardIndices = cards.indices.filter { cards[$0].isFaceUp && !cards[$0].isMatched }
         let faceUpCardsToShuffle = faceUpCardIndices.map { cards[$0] }.shuffled()
-
+        
         for (index, cardIndex) in faceUpCardIndices.enumerated() {
             cards[cardIndex] = faceUpCardsToShuffle[index]
         }
@@ -192,12 +188,6 @@ struct SetGame{
     mutating func makeFaceUp() {
         
     }
-    
-//    mutating func falsifyAllMatchedWhenAddingCards() {
-//        for var card in cards {
-//            card.matchedWhenAddingCards = false
-//        }
-//    }
     
     mutating func makeChosenAndMatchedFalse(index: Int) {
         cards[index].isMatched = false
@@ -217,7 +207,7 @@ struct SetGame{
                 {
                     cards[i].isChosen = false
                 }
-       
+                
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                 {
                     cards[i].isChosen = false
@@ -242,7 +232,7 @@ struct SetGame{
                 chosenCards.removeAll()
                 filterPossibleCorrectCards()
             }
-
+            
             if(cards[chosenIndex].isChosen) {
                 cards[chosenIndex].isChosen = !cards[chosenIndex].isChosen
                 chosenCards.removeAll( where: { $0.id == cards[chosenIndex].id } )
@@ -262,7 +252,7 @@ struct SetGame{
                 {
                     cards[i].isMatched = true
                 }
-       
+                
                 if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                 {
                     cards[i].isMatched = true
@@ -270,23 +260,23 @@ struct SetGame{
                 score = (200-10*Int(timer.distance(to: Date()).rounded(.down))) > 100 ? score + 200 - 10*Int(timer.distance(to: Date()).rounded(.down)) : (score + 100)
                 if(cards.allSatisfy { $0.isMatched })
                 {
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-//                    {
-//                        cards[i].isFaceUp = false
-//                    }
-//                    
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-//                    {
-//                        cards[i].isFaceUp = false
-//                    }
-//                    
-//                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-//                    {
-//                        cards[i].isFaceUp = false
-//                    }
-       
+                    //                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
+                    //                    {
+                    //                        cards[i].isFaceUp = false
+                    //                    }
+                    //
+                    //                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
+                    //                    {
+                    //                        cards[i].isFaceUp = false
+                    //                    }
+                    //
+                    //                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
+                    //                    {
+                    //                        cards[i].isFaceUp = false
+                    //                    }
+                    
                 }
-               // filterPossibleCorrectCards()
+                // filterPossibleCorrectCards()
             }
         }
         filterPossibleCorrectCards()
@@ -297,29 +287,29 @@ struct SetGame{
             $0.id == card.id
         }) {
             if(chosenCards.count == 3)
-                 {
-                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-                    {
-                        cards[i].isFaceUp = false
+            {
+                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
+                {
+                    cards[i].isFaceUp = false
+                }
+                
+                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
+                {
+                    cards[i].isFaceUp = false
+                }
+                
+                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
+                {
+                    cards[i].isFaceUp = false
+                }
+                chosenCards.removeAll()
+                seenCardsNumber += 3
+                if(seenCardsNumber <= setCardsNumber) {
+                    for index in seenCardsNumber-3 ..< seenCardsNumber {
+                        cards[index].isFaceUp = true
                     }
-                    
-                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-                    {
-                        cards[i].isFaceUp = false
-                    }
-                    
-                    if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-                    {
-                        cards[i].isFaceUp = false
-                    }
-                    chosenCards.removeAll()
-                    seenCardsNumber += 3
-                    if(seenCardsNumber <= setCardsNumber) {
-                        for index in seenCardsNumber-3 ..< seenCardsNumber {
-                            cards[index].isFaceUp = true
-                        }
-                    }
-                } 
+                }
+            }
             
             if(cards[chosenIndex].isChosen) {
                 cards[chosenIndex].isChosen = !cards[chosenIndex].isChosen
@@ -331,43 +321,43 @@ struct SetGame{
             }
             
             if(chosenCards.count == 3)
-                 {
+            {
+                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
+                {
+                    cards[i].isMatched = true
+                }
+                
+                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
+                {
+                    cards[i].isMatched = true
+                }
+                
+                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
+                {
+                    cards[i].isMatched = true
+                }
+                if(cards.allSatisfy { $0.isMatched })
+                {
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
                     {
-                        cards[i].isMatched = true
+                        cards[i].isFaceUp = false
                     }
                     
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
                     {
-                        cards[i].isMatched = true
+                        cards[i].isFaceUp = false
                     }
                     
                     if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
                     {
-                        cards[i].isMatched = true
-                    }
-                    if(cards.allSatisfy { $0.isMatched })
-                    {
-                        if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-                        {
-                            cards[i].isFaceUp = false
-                        }
-                        
-                        if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-                        {
-                            cards[i].isFaceUp = false
-                        }
-                        
-                        if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-                        {
-                            cards[i].isFaceUp = false
-                        }
+                        cards[i].isFaceUp = false
                     }
                 }
             }
-            
         }
-
+        
+    }
+    
     func countChosenCards() -> Int {
         return chosenCards.count
     }
@@ -376,14 +366,14 @@ struct SetGame{
         timer.distance(to: Date()).rounded(.down)
     }
     
-//    mutating func addSeenCards() {
-//        seenCardsNumber += 3
-//        if(seenCardsNumber <= setCardsNumber) {
-//            for index in seenCardsNumber-3 ..< seenCardsNumber {
-//                cards[index].isFaceUp = true
-//            }
-//        }
-//    }
+    //    mutating func addSeenCards() {
+    //        seenCardsNumber += 3
+    //        if(seenCardsNumber <= setCardsNumber) {
+    //            for index in seenCardsNumber-3 ..< seenCardsNumber {
+    //                cards[index].isFaceUp = true
+    //            }
+    //        }
+    //    }
     mutating func addSeenCards() {
         filterPossibleCorrectCards()
         if  possibleCorrectCards.count > 0 {
@@ -408,34 +398,9 @@ struct SetGame{
             matchedWhenAddingCards = true
             
             chosenCards.removeAll()
-//            score = (200-10*Int(timer.distance(to: Date()).rounded(.down))) > 100 ? score + 200 - 10*Int(timer.distance(to: Date()).rounded(.down)) : (score + 100)
         } else {
             matchedWhenAddingCards = false
         }
-        
-//        if(checkChoosenCardsMatched())
-//           {
-//                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[0].id })
-//                {
-//                    cards[i].isFaceUp = false
-//                }
-//
-//                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[1].id })
-//                {
-//                    cards[i].isFaceUp = false
-//                }
-//
-//                if let i = cards.firstIndex(where: { $0.id ==  chosenCards[2].id })
-//                {
-//                    cards[i].isFaceUp = false
-//                }
-//                chosenCards.removeAll()
-//            }
-//        if(possibleCorrectCards.count > 1) {
-//            score -= 100
-//        }
-
-//        filterPossibleCorrectCards()
         seenCardsNumber += 3
         if(seenCardsNumber <= setCardsNumber) {
             for index in seenCardsNumber-3 ..< seenCardsNumber {
@@ -443,13 +408,12 @@ struct SetGame{
             }
         }
         filterPossibleCorrectCards()
-
     }
     
     func checkSeenCardsIsEqualToSetCards() -> Bool {
         return seenCardsNumber == setCardsNumber
     }
-
+    
     func checkChoosenCardsMatched() -> Bool {
         if(chosenCards.count == 3) {
             if (((chosenCards[0].number == chosenCards[1].number &&
@@ -486,18 +450,7 @@ struct SetGame{
         
         var isChosen: Bool
         
-        var isMatched: Bool 
-//        {
-//            didSet {
-//                if isMatched && !oldValue {
-//                    matchedWhenAddingCards = true
-//                } else {
-//                    matchedWhenAddingCards = false
-//                }
-//            }
-//        }
-        
-       // var matchedWhenAddingCards = false
+        var isMatched: Bool
         
         var isFaceUp: Bool
     }

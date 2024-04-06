@@ -1,10 +1,3 @@
-//
-//  CardView.swift
-//  SetGame
-//
-//  Created by hanasiu on 3/13/24.
-//
-
 import SwiftUI
 
 struct CardView: View {
@@ -16,39 +9,19 @@ struct CardView: View {
         self.card = card
         self.isVibrate = isVibrate
     }
-   
+    
     var body: some View {
-      //  ZStack {
-            //let base = RoundedRectangle(cornerRadius: 12)
-           // Group {
-//                base.fill(.white).strokeBorder(card.chosen ? card.isMatched ? .green : .red : .blue, lineWidth: card.chosen ? card.isMatched ? 10 : 6 : 4)
-              cardContents
+        cardContents
             .cardify(isFaceUp: card.isFaceUp, isMatched:
-                            card.isMatched, isChosen: card.isChosen)
-        //    .animation(.linear(duration: 2), value: card.isFaceUp)
+                        card.isMatched, isChosen: card.isChosen)
             .transition(.scale)
-        
-
-          //  .transition(.asymmetric(insertion: .identity, removal: .identity))
-
-        
-//                .overlay(cardContents)
-            
-         //   }
-      //  }
     }
     
     var cardContents: some View {
         symbolBox
             .offset(x: isVibrate && card.isChosen ? -15 : 0)
             .animation(isVibrate ? vibrate : Animation.default, value: isVibrate)
-            .rotationEffect(.degrees(card.isMatched ? 720 : 0))
-//            .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: card.isMatched)
-//            .rotationEffect(.degrees(!card.isMatched && card.isChosen ? 10 : 0))
-        
-            //.rotationEffect(.degrees(!card.isMatched ? 180 : 0))
-//
-            
+            .rotationEffect(.degrees(card.isMatched ? 720 : 0))         
     }
     
     private var symbolBox: some View {
@@ -95,17 +68,17 @@ struct CardView: View {
                 .stroke(getBorderColor(), lineWidth: card.shading == "striped" ? 4.0 : 0.0))
             .clipShape(Diamond())
             .aspectRatio(1/2, contentMode: .fit)
-
-            switch card.shape {
-            case "oval":
-                oval
-            case "rectangle":
-                squiggle
-            case "diamond":
-                diamond
-            default:
-                EmptyView()
-            }
+        
+        switch card.shape {
+        case "oval":
+            oval
+        case "rectangle":
+            squiggle
+        case "diamond":
+            diamond
+        default:
+            EmptyView()
+        }
     }
     
     func getColor() -> Color {

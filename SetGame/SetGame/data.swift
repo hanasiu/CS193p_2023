@@ -1,10 +1,3 @@
-//
-//  data.swift
-//  SetGame
-//
-//  Created by hanasiu on 2/15/24.
-//
-
 import Foundation
 
 func generateAllCards() -> [CardExample] {

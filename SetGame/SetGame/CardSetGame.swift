@@ -86,9 +86,6 @@ class CardSetGame: ObservableObject {
     func checkChosenCardsForAnimation() -> Bool {
         return setGame.checkChosenCardsForAnimation()
     }
-//    func falsifyAllMatchedWhenAddingCards() {
-//        setGame.falsifyAllMatchedWhenAddingCards()
-//    }
     
     func getScore() -> Int {
         return setGame.score

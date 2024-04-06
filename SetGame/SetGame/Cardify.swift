@@ -1,7 +1,6 @@
 import SwiftUI
 
 
-//base.fill(.white).strokeBorder(card.chosen ? card.isMatched ? .green : .red : .blue, lineWidth: card.chosen ? card.isMatched ? 10 : 6 : 4)
 struct Cardify: ViewModifier, Animatable {
     init(isFaceUp: Bool, isMatched: Bool, isChosen: Bool) {
         rotation = isFaceUp ? 0 : 180
@@ -28,23 +27,19 @@ struct Cardify: ViewModifier, Animatable {
         ZStack {
             let base = RoundedRectangle(cornerRadius: Constants.cornerRadius)
             base
-               // .strokeBorder(.red)
-                //.strokeBorder(lineWidth: Constants.lineWidth)
+            // .strokeBorder(.red)
+            //.strokeBorder(lineWidth: Constants.lineWidth)
                 .strokeBorder(isFaceUp ? isChosen ? isMatched ? .green : .red : .blue : .blue, lineWidth: isFaceUp ? isChosen ? isMatched ?  8 : 6 : 4 : 4)
                 .background(base.fill(.white))
                 .shadow(color: .red, radius:0.1)
                 .overlay(content)
                 .opacity(isFaceUp ? 1 : 0)
-                base.fill().opacity(isFaceUp ? 0 : 1)
+            base.fill().opacity(isFaceUp ? 0 : 1)
         }
         .rotation3DEffect(
             .degrees(rotation),
             axis: (x: 0.0, y: 1.0, z: 0.0)
         )
-   //     / .animation(.spin(duration: 1), value: isFaceUp)
-
-//        .transition(.asymmetric(insertion: .identity, removal: .identity))
-   
     }
     
     private struct Constants {
