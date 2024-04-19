@@ -31,7 +31,24 @@ class EmojiArtDocument: ObservableObject {
     }
     
    func addEmoji(_ emoji: String, at position: Emoji.Position, size: CGFloat) {
-       emojiArt.addEmoji(emoji, at: position, size: Int(size))
+       emojiArt.addEmoji(emoji, at: position, size: size)
+    }
+    
+    func changeEmojiPosition(selectedEmojis: Set<Emoji.ID>, addedDistance: CGOffset) {
+        emojiArt.changeEmojiPosition(selectedEmojis: selectedEmojis, addedDistance: addedDistance)
+    }
+    
+    func changeUnselectedEmojiPosition(emojiId: Emoji.ID, addedDistance: CGOffset) {
+        emojiArt.changeUnselectedEmojiPosition(emojiId: emojiId, addedDistance: addedDistance)
+    }
+    
+    
+    func changeEmojiZoom(selectedEmojis: Set<Emoji.ID>, magnifiedZoom: CGFloat) {
+        emojiArt.changeEmojiZoom(selectedEmojis: selectedEmojis, magnifiedZoom: magnifiedZoom)
+    }
+    
+    func deleteEmoji(_ emojiId: Int) {
+        emojiArt.deleteEmoji(emojiId)
     }
 }
 
