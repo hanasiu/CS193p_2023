@@ -2,55 +2,54 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
-    
-    @ObservedObject var viewModel: EmojiMemoryGame
-
+    @ObservedObject var memoryGame: EmojiMemoryGame
     
     var body: some View {
         VStack {
-            Text(viewModel.theme.name).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
             ScrollView{
                 cards
-                    .animation(.default, value: viewModel.cards)
+                    .animation(.default, value: memoryGame.cards)
             }
+            .padding(.top, -20)
             
             HStack {
-                Text("Score: \(viewModel.getScore())")
+                Text("Score: \(memoryGame.getScore())")
                 Spacer()
                 Button("New Game") {
-                    viewModel.newGame()
+                    memoryGame.newGame()
                 }
             }
         }
         .foregroundColor(.mint)
         .padding()
+        .navigationTitle("\(memoryGame.theme.name)")
     }
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)],
                   spacing: 0) {
-      
-            ForEach(viewModel.cards) { card in
+            
+            ForEach(memoryGame.cards.uniqued) { card in
                 VStack{
                     CardView(card).aspectRatio(2/3, contentMode: .fit)
                         .padding(4)
                         .onTapGesture {
-                            viewModel.chose(card)
+                            memoryGame.chose(card)
                         }
                 }
             }
+            .foregroundColor(memoryGame.theme.rgbaToColor())
         }
-                  .foregroundColor(viewModel.interpretThemeColor())
     }
     
     var emojiSelectorList: some View {
         HStack{
             Spacer()
-                selectAnimal
+            selectAnimal
             Spacer()
-                selectSea
+            selectSea
             Spacer()
-                selectHalloween
+            selectHalloween
             Spacer()
         }
         .foregroundColor(.yellow)
@@ -59,11 +58,11 @@ struct EmojiMemoryGameView: View {
     
     func emojiSelector(emojiName: String, symbol: String) -> some View {
         VStack {
-      }
+        }
     }
     
     var selectAnimal: some View {
-            emojiSelector(emojiName: "Animal", symbol: "teddybear.fill")
+        emojiSelector(emojiName: "Animal", symbol: "teddybear.fill")
     }
     
     var selectSea: some View {
@@ -73,13 +72,11 @@ struct EmojiMemoryGameView: View {
     var selectHalloween: some View {
         emojiSelector(emojiName: "Halloween", symbol: "party.popper.fill")
     }
-
+    
 }
 
 struct CardView: View {
     let card: MemoryGame<String>.Card
-  //  let gradient: Gradient
-  
     
     init(_ card: MemoryGame<String>.Card) {
         self.card = card
@@ -94,7 +91,6 @@ struct CardView: View {
                 Text(card.content)
                     .font(.system(size: 200))
                     .minimumScaleFactor(0.01)
-                   
                     .aspectRatio(contentMode: .fit)
             }
             .opacity(card.isFaceUp ? 1 : 0)
@@ -105,5 +101,5 @@ struct CardView: View {
 }
 
 #Preview {
-    EmojiMemoryGameView(viewModel: EmojiMemoryGame(themes: themes))
+    EmojiMemoryGameView(memoryGame: EmojiMemoryGame(theme: ThemeStore(named: "Preview").themes[0]))
 }
